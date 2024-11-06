@@ -5,6 +5,9 @@ const cors = require('cors');
 const { readStudent } = require('./utils/read-util.js'); // Import the readStudent function
 require('dotenv').config();
 
+const multer  = require('multer');
+const upload = multer({ dest: 'uploads/' })
+
 const app = express();
 const PORT = process.env.PORT || 5050;
 const startPage = "index.html";
@@ -12,9 +15,10 @@ const startPage = "index.html";
 mongoose.set('strictQuery', true);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }))
 
 const { addStudent } = require('./utils/add-studentUtil')
-app.post('/add-student', addStudent);
+app.post('/add-student',upload.single('profileImage'), addStudent);
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + "/public/" + startPage);
